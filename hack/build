@@ -1,11 +1,16 @@
-#!/usr/bin/env -S dagger shell --no-mod
+#!/usr/bin/env bash
+set -euo pipefail
 
 # hack/build builds the engine and cli from local code, and additionally starts
 # the engine in the host's docker runtime.
 
-# HACK: strip "build" from the script path to get the parent module
-.cd ${0%/build}/..
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+repo_root="$(cd "$script_dir/.." && pwd -P)"
 
+cd "$repo_root"
+
+# shellcheck disable=SC2016
+exec dagger shell -W "$repo_root" -c '
 CONTAINER=${_EXPERIMENTAL_DAGGER_DEV_CONTAINER:-dagger-engine.dev}
 VOLUME=$CONTAINER
 IMAGE=${_EXPERIMENTAL_DAGGER_DEV_IMAGE:-localhost/dagger-engine.dev}
@@ -35,3 +40,4 @@ engine-dev |\
 start_pid=$!
 
 .wait $cli_pid $engine_pid $start_pid
+'

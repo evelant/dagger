@@ -73,6 +73,20 @@ This will:
 4. Run an ephemeral container with the CLI installed, and the engine available as a sidecar
 5. Open an interactive terminal
 
+#### Local host testing
+
+To test real host workflows against a local engine build:
+
+```shell
+./hack/install-dev
+dagger-dev version
+```
+
+This rebuilds the engine and CLI, replaces the `dagger-engine.dev` Docker
+container while keeping its volume/cache by default, and installs a
+`dagger-dev` wrapper in `~/.local/bin` that targets that engine. Use
+`./hack/install-dev --fresh` to remove the dev engine volume/cache too.
+
 #### Integration testing
 
 - Run all core tests: `dagger checks test-split:*`
